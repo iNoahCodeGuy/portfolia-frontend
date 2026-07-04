@@ -69,6 +69,11 @@ export default function MessageBubble({ message, onContactSubmit, onCrushSubmit 
                 ),
                 img: ({ src, alt }) => (
                   <span className="block my-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element --
+                        Renders arbitrary remote images from LLM-generated markdown.
+                        Dimensions are unknown at build time and hosts vary, so
+                        next/image (which requires width/height and remotePatterns
+                        config) isn't a drop-in replacement here. */}
                     <img
                       src={src}
                       alt={alt || ""}

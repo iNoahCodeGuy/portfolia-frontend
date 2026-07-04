@@ -9,6 +9,14 @@ import ChatInput from "./ChatInput";
 import { ContactFormData, detectForm } from "./ContactForm";
 import { CrushFormData } from "./CrushForm";
 
+// Menu button texts that should be sent as role to the backend
+const MENU_BUTTONS = new Set([
+  "Learn more about Noah",
+  "See what Noah has built",
+  "How I relate to Enterprise AI",
+  "Confess a crush",
+]);
+
 export default function Chat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,48 +41,43 @@ export default function Chat() {
     }
   }, [messages]);
 
-  // Menu button texts that should be sent as role to the backend
-  const MENU_BUTTONS = new Set([
-    "Learn more about Noah",
-    "See what Noah has built",
-    "How I relate to Enterprise AI",
-    "Confess a crush",
-  ]);
-
-  const handleSendMessage = async (content: string) => {
-    const userMessage: Message = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content,
-    };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
-
-    try {
-      const role = MENU_BUTTONS.has(content) ? content : undefined;
-      const result = await sendMessage(content, sessionId, role);
-      setSessionId(result.sessionId);
-
-      const assistantMessage: Message = {
+  const handleSendMessage = useCallback(
+    async (content: string) => {
+      const userMessage: Message = {
         id: crypto.randomUUID(),
-        role: "assistant",
-        content: result.response,
+        role: "user",
+        content,
       };
 
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch {
-      const errorMessage: Message = {
-        id: crypto.randomUUID(),
-        role: "assistant",
-        content:
-          "Something went wrong. Try again in a moment.",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+      setMessages((prev) => [...prev, userMessage]);
+      setIsLoading(true);
+
+      try {
+        const role = MENU_BUTTONS.has(content) ? content : undefined;
+        const result = await sendMessage(content, sessionId, role);
+        setSessionId(result.sessionId);
+
+        const assistantMessage: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: result.response,
+        };
+
+        setMessages((prev) => [...prev, assistantMessage]);
+      } catch {
+        const errorMessage: Message = {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content:
+            "Something went wrong. Try again in a moment.",
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [sessionId],
+  );
 
   const handleContactSubmit = useCallback(
     (data: ContactFormData) => {
@@ -90,7 +93,7 @@ export default function Chat() {
 
       handleSendMessage(formatted);
     },
-    [sessionId],
+    [handleSendMessage],
   );
 
   const handleCrushSubmit = useCallback(
@@ -103,7 +106,7 @@ export default function Chat() {
 
       handleSendMessage(formatted);
     },
-    [sessionId],
+    [handleSendMessage],
   );
 
   const handleReset = () => {
