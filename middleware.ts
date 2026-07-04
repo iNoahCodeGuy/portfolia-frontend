@@ -1,32 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { SESSION_COOKIE, verifySessionToken } from './lib/dashboard-auth'
 
 /**
- * Protects /dashboard routes with a simple password cookie.
- * Set DASHBOARD_PASSWORD in your environment variables.
+ * Protects /dashboard and /api/analytics behind a signed session cookie.
+ * Fails closed: if DASHBOARD_PASSWORD is not configured, protected routes
+ * return 503 instead of becoming public.
  */
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // The login page and login API stay reachable
+  if (pathname === '/dashboard/login' || pathname === '/api/dashboard-auth') {
+    return NextResponse.next()
+  }
+
   const password = process.env.DASHBOARD_PASSWORD
-  if (!password) return NextResponse.next()
+  if (!password) {
+    return new NextResponse('Dashboard authentication is not configured', { status: 503 })
+  }
 
-  // Skip the login page itself
-  if (request.nextUrl.pathname === '/dashboard/login') {
+  const token = request.cookies.get(SESSION_COOKIE)?.value
+  if (await verifySessionToken(token, password)) {
     return NextResponse.next()
   }
 
-  // Skip the login API route
-  if (request.nextUrl.pathname === '/api/dashboard-auth') {
-    return NextResponse.next()
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
-
-  // Check auth cookie
-  const authCookie = request.cookies.get('dashboard_auth')?.value
-  if (authCookie === password) {
-    return NextResponse.next()
-  }
-
-  // Redirect to login
-  const loginUrl = new URL('/dashboard/login', request.url)
-  return NextResponse.redirect(loginUrl)
+  return NextResponse.redirect(new URL('/dashboard/login', request.url))
 }
 
 export const config = {
