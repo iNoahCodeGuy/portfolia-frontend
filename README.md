@@ -18,7 +18,7 @@ Browser ──▶ this app (Next.js 14, Vercel)
               └─ /dashboard (password-protected) ──▶ /api/analytics (Supabase, server-side)
 ```
 
-The backend lives in its own repo: [Noahs_Assistant](https://github.com/iNoahCodeGuy/Noahs_Assistant).
+The backend lives in its own repo: [portfolia-backend](https://github.com/iNoahCodeGuy/portfolia-backend).
 
 ## Running locally
 
