@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectForm, detectContactForm } from "../components/ContactForm";
+import { detectForm } from "../components/ContactForm";
 
 // The exact crush form message the assistant sends (see CLAUDE.md conversation 4)
 const CRUSH_MESSAGE = [
@@ -125,28 +125,6 @@ describe("detectForm", () => {
 
     it("handles an empty string", () => {
       expect(detectForm("")).toEqual({ preamble: "", formType: null });
-    });
-  });
-});
-
-describe("detectContactForm (deprecated wrapper)", () => {
-  it("reports hasForm true for contact form content", () => {
-    const result = detectContactForm(CONTACT_MESSAGE);
-    expect(result.hasForm).toBe(true);
-    expect(result.preamble).toBe(
-      "Yes. If you want to discuss your project, I can set up a connection right now. Fill this out:",
-    );
-  });
-
-  it("reports hasForm false for crush form content", () => {
-    expect(detectContactForm(CRUSH_MESSAGE).hasForm).toBe(false);
-  });
-
-  it("reports hasForm false for plain prose", () => {
-    const content = "Just a normal answer about the attrition model.";
-    expect(detectContactForm(content)).toEqual({
-      preamble: content,
-      hasForm: false,
     });
   });
 });

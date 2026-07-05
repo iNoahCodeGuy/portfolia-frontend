@@ -56,15 +56,6 @@ export function detectForm(content: string): {
   return { preamble, formType: isCrush ? "crush" : "contact" };
 }
 
-/** @deprecated Use detectForm instead */
-export function detectContactForm(content: string): {
-  preamble: string;
-  hasForm: boolean;
-} {
-  const { preamble, formType } = detectForm(content);
-  return { preamble, hasForm: formType === "contact" };
-}
-
 export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
   const [form, setForm] = useState<ContactFormData>({
     name: "",
