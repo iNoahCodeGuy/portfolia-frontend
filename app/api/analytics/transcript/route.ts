@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { clientIp, rateLimited } from '@/lib/rate-limit'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -15,6 +16,11 @@ function getSupabase() {
 }
 
 export async function GET(request: NextRequest) {
+  // Auth-gated by middleware; this is defense in depth against a leaked cookie
+  if (rateLimited(`analytics:${clientIp(request)}`, 60, 60_000)) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  }
+
   try {
     const sessionId = request.nextUrl.searchParams.get('session_id')
     if (!sessionId) {

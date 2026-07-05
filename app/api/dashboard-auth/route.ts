@@ -5,8 +5,17 @@ import {
   createSessionToken,
   passwordsMatch,
 } from '@/lib/dashboard-auth'
+import { clientIp, rateLimited } from '@/lib/rate-limit'
 
 export async function POST(request: NextRequest) {
+  // Login is the brute-force target: 5 attempts/minute per IP
+  if (rateLimited(`login:${clientIp(request)}`, 5, 60_000)) {
+    return NextResponse.json(
+      { error: 'Too many attempts — wait a minute and try again' },
+      { status: 429 }
+    )
+  }
+
   const correct = process.env.DASHBOARD_PASSWORD
   if (!correct) {
     return NextResponse.json(
