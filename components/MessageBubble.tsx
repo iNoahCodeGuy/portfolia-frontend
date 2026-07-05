@@ -15,9 +15,14 @@ interface MessageBubbleProps {
 export default function MessageBubble({ message, onContactSubmit, onCrushSubmit }: MessageBubbleProps) {
   const isUser = message.role === "user";
 
-  const { preamble, formType } = isUser
-    ? { preamble: message.content, formType: null as null }
+  const detected = isUser
+    ? { preamble: message.content, formType: null }
     : detectForm(message.content);
+  // The backend's structured signal decides whether a form renders;
+  // detectForm remains the fallback (and supplies the display preamble).
+  const formType =
+    !isUser && message.form !== undefined ? message.form : detected.formType;
+  const preamble = formType ? detected.preamble : message.content;
 
   return (
     <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>

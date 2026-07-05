@@ -4,7 +4,7 @@ export async function sendMessage(
   message: string,
   sessionId: string | null,
   role?: string,
-): Promise<{ response: string; sessionId: string }> {
+): Promise<{ response: string; sessionId: string; form: "crush" | "contact" | null }> {
   const payload: Record<string, unknown> = {
     message,
     session_id: sessionId,
@@ -27,5 +27,7 @@ export async function sendMessage(
   return {
     response: data.response,
     sessionId: data.session_id,
+    // Structured form signal (older backends omit it — null means no form)
+    form: data.form ?? null,
   };
 }

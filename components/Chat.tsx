@@ -30,6 +30,9 @@ export default function Chat() {
     if (messages.length === 0) return false;
     const last = messages[messages.length - 1];
     if (last.role !== "assistant") return false;
+    // Prefer the backend's structured signal; fall back to text detection
+    // for messages that predate the form field.
+    if (last.form !== undefined) return last.form !== null;
     return detectForm(last.content).formType !== null;
   }, [messages]);
 
@@ -61,6 +64,7 @@ export default function Chat() {
           id: crypto.randomUUID(),
           role: "assistant",
           content: result.response,
+          form: result.form,
         };
 
         setMessages((prev) => [...prev, assistantMessage]);
