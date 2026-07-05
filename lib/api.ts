@@ -13,10 +13,12 @@ export async function sendMessage(
     payload.role = role;
   }
 
+  // Generation can take a while, but a hung request should not spin forever
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(60_000),
   });
 
   if (!res.ok) {

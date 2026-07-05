@@ -14,16 +14,21 @@ export default function DashboardLogin() {
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/dashboard-auth', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
+    try {
+      const res = await fetch('/api/dashboard-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
 
-    if (res.ok) {
-      router.push('/dashboard')
-    } else {
+      if (res.ok) {
+        router.push('/dashboard')
+        return // keep the button disabled while navigating
+      }
       setError('Wrong password')
+    } catch {
+      setError('Network error — try again')
+    } finally {
       setLoading(false)
     }
   }
@@ -37,6 +42,7 @@ export default function DashboardLogin() {
         </div>
 
         <input
+          aria-label="Dashboard password"
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}

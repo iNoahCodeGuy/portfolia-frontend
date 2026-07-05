@@ -145,7 +145,7 @@ export default function Chat() {
       )}
 
       {/* Chat messages area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto chat-scroll">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto chat-scroll" aria-live="polite">
         {showWelcome ? (
           <WelcomeScreen onSelectOption={handleSendMessage} />
         ) : (

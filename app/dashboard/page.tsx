@@ -144,8 +144,8 @@ function TranscriptViewer({ sessionId, onClose }: { sessionId: string, onClose: 
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch(`/api/analytics/transcript?session_id=${sessionId}`)
-      .then(r => r.json())
+    fetch(`/api/analytics/transcript?session_id=${encodeURIComponent(sessionId)}`)
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(data => setMessages(data.messages || []))
       .catch(() => setMessages([]))
       .finally(() => setLoading(false))
@@ -199,7 +199,7 @@ export default function Dashboard() {
   const fetchData = () => {
     setLoading(true)
     fetch('/api/analytics', { cache: 'no-store' })
-      .then(r => r.json())
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status} — session may have expired`))))
       .then(d => {
         if (d.error) throw new Error(d.error)
         setData(d)
