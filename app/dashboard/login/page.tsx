@@ -44,6 +44,7 @@ export default function DashboardLogin() {
         <input
           aria-label="Dashboard password"
           type="password"
+          autoComplete="current-password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           placeholder="Password"

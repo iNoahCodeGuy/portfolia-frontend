@@ -44,6 +44,7 @@ export default function CrushForm({ onSubmit, disabled }: CrushFormProps) {
     <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-2">
       <input
         type="text"
+        aria-label="Name"
         placeholder="Name"
         value={form.name}
         onChange={(e) => handleChange("name", e.target.value)}
@@ -52,6 +53,7 @@ export default function CrushForm({ onSubmit, disabled }: CrushFormProps) {
       />
       <input
         type="text"
+        aria-label="Number or social"
         placeholder="Number or social"
         value={form.contact}
         onChange={(e) => handleChange("contact", e.target.value)}
@@ -59,6 +61,7 @@ export default function CrushForm({ onSubmit, disabled }: CrushFormProps) {
         className="rounded-lg bg-zinc-700 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-400 outline-none focus:ring-1 focus:ring-blue-500"
       />
       <textarea
+        aria-label="Message for Noah"
         placeholder="Message for Noah *"
         value={form.message}
         onChange={(e) => handleChange("message", e.target.value)}

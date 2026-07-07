@@ -166,8 +166,8 @@ function TranscriptViewer({ sessionId, onClose }: { sessionId: string, onClose: 
           ) : messages.length === 0 ? (
             <p className="text-zinc-500 text-center py-8">No messages recorded for this session</p>
           ) : (
-            messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+            messages.map((m) => (
+              <div key={`${m.turn_number}-${m.role}`} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] rounded-xl px-4 py-3 text-sm ${
                   m.role === 'user'
                     ? 'bg-zinc-700 text-zinc-100'
@@ -297,8 +297,8 @@ export default function Dashboard() {
               {data.leads.length === 0 ? (
                 <p className="text-zinc-500 text-sm text-center py-8">No leads captured yet</p>
               ) : (
-                data.leads.map((lead, i) => (
-                  <div key={i} className="bg-zinc-900 border border-zinc-700/50 rounded-lg p-4 space-y-2">
+                data.leads.map((lead) => (
+                  <div key={lead.created_at} className="bg-zinc-900 border border-zinc-700/50 rounded-lg p-4 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-zinc-100">
                         {lead.name || 'No name'}
@@ -344,8 +344,8 @@ export default function Dashboard() {
               {data.crushes.length === 0 ? (
                 <p className="text-zinc-500 text-sm text-center py-8">No confessions yet</p>
               ) : (
-                data.crushes.map((crush, i) => (
-                  <div key={i} className="bg-zinc-900 border border-zinc-700/50 rounded-lg p-4 space-y-2">
+                data.crushes.map((crush) => (
+                  <div key={crush.created_at} className="bg-zinc-900 border border-zinc-700/50 rounded-lg p-4 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium text-zinc-100">
                         {crush.anonymous ? 'Anonymous' : (crush.name || 'No name')}

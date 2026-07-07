@@ -1,10 +1,21 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// Inlined at build time. A production build missing the env var used to
+// fall back to localhost — every chat request then fails with a misleading
+// network error. Keep the localhost convenience for dev only and fail
+// loudly in prod, where the only correct value comes from Vercel env.
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === "production" ? "" : "http://localhost:8000");
 
 export async function sendMessage(
   message: string,
   sessionId: string | null,
   role?: string,
 ): Promise<{ response: string; sessionId: string; form: "crush" | "contact" | null }> {
+  if (!API_URL) {
+    throw new Error(
+      "NEXT_PUBLIC_API_URL is not set — the production build has no backend to talk to",
+    );
+  }
   const payload: Record<string, unknown> = {
     message,
     session_id: sessionId,

@@ -89,6 +89,7 @@ export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
     <form onSubmit={handleSubmit} className="mt-3 flex flex-col gap-2">
       <input
         type="text"
+        aria-label="Name"
         placeholder="Name *"
         value={form.name}
         onChange={(e) => handleChange("name", e.target.value)}
@@ -97,6 +98,7 @@ export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
       />
       <input
         type="tel"
+        aria-label="Phone"
         placeholder="Phone"
         value={form.phone}
         onChange={(e) => handleChange("phone", e.target.value)}
@@ -105,6 +107,7 @@ export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
       />
       <input
         type="email"
+        aria-label="Email"
         placeholder="Email *"
         value={form.email}
         onChange={(e) => handleChange("email", e.target.value)}
@@ -113,6 +116,7 @@ export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
       />
       <input
         type="text"
+        aria-label="Company"
         placeholder="Company"
         value={form.company}
         onChange={(e) => handleChange("company", e.target.value)}
@@ -120,6 +124,7 @@ export default function ContactForm({ onSubmit, disabled }: ContactFormProps) {
         className="rounded-lg bg-zinc-700 px-3 py-2 text-sm text-zinc-100 placeholder-zinc-400 outline-none focus:ring-1 focus:ring-blue-500"
       />
       <textarea
+        aria-label="Additional information"
         placeholder="Additional information"
         value={form.additional}
         onChange={(e) => handleChange("additional", e.target.value)}
